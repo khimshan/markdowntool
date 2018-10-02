@@ -39,7 +39,8 @@ function ExtractFormattedTextFromMW()
 {
   var FormattedTextObject = {};
   var itemCount = 0;
-  var txtProblemStatement, txtAccountName, txtStaticAccountName, txtStaticAccountNameLink, nodelistWorkGroup, txtStaticWorkGroupName, txtStaticWorkGroupNameBold, txtProjecName, txtStaticProjectName, txtStaticProjectNameBold, txtStaticItemNames, txtStaticItemNamesBold, txtStaticEndText, txtItemNameForInternal, txtItemNameForCustomer;
+  var txtProblemStatement, txtAccountName, txtStaticAccountName, txtStaticAccountNameLink, nodelistWorkGroup, txtStaticWorkGroupName, txtStaticWorkGroupNameBold, txtProjecName, txtStaticProjectName, txtStaticProjectTypeBold, txtStaticProjectNameBold, txtStaticItemNames, txtStaticItemNamesBold, txtStaticEndText, txtItemNameForInternal, txtItemNameForCustomer;
+  var txtProjectType, txtSourceEndpoint, txtDestEndpoint;
 
   txtAccountName = ExtractImpersonationAccountID();
 
@@ -59,6 +60,34 @@ function ExtractFormattedTextFromMW()
   txtStaticProjectName = "Project Name: " + txtProjecName + "\n";
   txtStaticProjectName = txtStaticProjectName + "Project Link: " + URLOBJECT.urlText + "\n";
   txtStaticProjectNameBold = "**Project Name:** " + "[" + txtProjecName + "]" + "(" + URLOBJECT.urlText + ")\n";
+
+  nodelistProjectType = document.querySelectorAll('.active .width-px-185');
+  
+  txtProjectType = "";
+
+  if (typeof nodelistProjectType[0] != 'undefined')
+  {
+    txtProjectType = nodelistProjectType[0].innerHTML.trim();
+    if (txtProjectType.match(/title\=\"(.*?)\"/i) != null) {
+      txtProjectType = txtProjectType.match(/title\=\"(.*?)\"/i)[1];
+    }
+  }
+
+  nodelistProjectType = document.querySelectorAll('.active .i2x+ .down-5');  
+  if (typeof nodelistProjectType[0] != 'undefined')
+  {
+    txtSourceEndpoint = nodelistProjectType[0].innerText;
+  }
+
+  nodelistProjectType = document.querySelectorAll('.active .destination+ .down-5');
+  if (typeof nodelistProjectType[0] != 'undefined')
+  {
+    txtDestEndpoint = nodelistProjectType[0].innerText;
+  }
+
+  if (txtProjectType != "") {
+    txtStaticProjectTypeBold = "**Project Type:** " + txtProjectType + " - [" + txtSourceEndpoint + " to "+ txtDestEndpoint +"] \n";
+  }
 
   // Extract all checked box elements (line item)
   var chkbox = document.querySelectorAll('.td:nth-child(1)'), x;
@@ -111,7 +140,7 @@ function ExtractFormattedTextFromMW()
 
   FormattedTextObject = {
     txtProblemStatement: txtProblemStatement, txtAccountName: txtAccountName, txtStaticAccountName: txtStaticAccountName, txtStaticAccountNameLink: txtStaticAccountNameLink, nodelistWorkGroup: nodelistWorkGroup, txtStaticWorkGroupName: txtStaticWorkGroupName,
-    txtStaticWorkGroupNameBold: txtStaticWorkGroupNameBold, txtProjecName: txtProjecName, txtStaticProjectName: txtStaticProjectName, txtStaticProjectNameBold: txtStaticProjectNameBold, txtStaticItemNames: txtStaticItemNames, txtStaticItemNamesBold: txtStaticItemNamesBold,
+    txtStaticWorkGroupNameBold: txtStaticWorkGroupNameBold, txtProjecName: txtProjecName, txtStaticProjectName: txtStaticProjectName, txtStaticProjectTypeBold : txtStaticProjectTypeBold, txtStaticProjectNameBold: txtStaticProjectNameBold, txtStaticItemNames: txtStaticItemNames, txtStaticItemNamesBold: txtStaticItemNamesBold,
     txtStaticEndText: txtStaticEndText, txtItemNameForInternal: txtItemNameForInternal, txtItemNameForCustomer: txtItemNameForCustomer
   }
 
@@ -208,7 +237,7 @@ function ExtractFormattedTextBasedOnURL()
             console.dir(rowsLicense[i]);
             if (i === x)
             {
-              txtUserEmail = txtUserEmail + rows[i].innerText.trim() + " [UPN:" + rowsUPN[i].innerText + ", License:" + rowsLicense[i].innerText + ", Status:" + rowsStatus[i].innerText+ "]" + "\n";
+              txtUserEmail = txtUserEmail + "`" + rows[i].innerText.trim() + " [UPN:" + rowsUPN[i].innerText + ", License:" + rowsLicense[i].innerText + ", Status:" + rowsStatus[i].innerText+ "]`" + "\n";
               console.dir(rowsLicense[i]);
             }
           }
@@ -432,6 +461,7 @@ function ExtractFormattedTextBasedOnURL()
       {
         completeMWInformationText = FTObject.txtStaticAccountName;
         completeMWInformationText = completeMWInformationText + FTObject.txtStaticWorkGroupNameBold;
+        completeMWInformationText = completeMWInformationText + FTObject.txtStaticProjectTypeBold
         completeMWInformationText = completeMWInformationText + FTObject.txtStaticProjectNameBold;
         completeMWInformationText = completeMWInformationText + FTObject.txtStaticItemNamesBold;
         completeMWInformationText = completeMWInformationText + "**Issue:**";
