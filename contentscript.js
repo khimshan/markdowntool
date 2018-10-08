@@ -318,7 +318,7 @@ function ExtractFormattedTextBasedOnURL()
               console.dir(rowsLicense[i]);
               if (i === x)
               {
-                txtUserEmail = txtUserEmail + rows[i].innerText.trim() + " [DMA:" + rowsDMA[i].innerText + ", License:" + rowsLicense[i].innerText + "]" + "\n";
+                txtUserEmail = "`" + txtUserEmail + rows[i].innerText.trim() + " [DMA:" + rowsDMA[i].innerText + ", License:" + rowsLicense[i].innerText + "]`" + "\n";
                 console.dir(rowsLicense[i]);
               }
             }
@@ -369,7 +369,7 @@ function ExtractFormattedTextBasedOnURL()
       }
     } else if (txtCurrentTabName.toUpperCase() === "COMPUTERS")
     { //COMPUTERS
-      //window.alert("Inside Computer tab :" + txtCurrentTabName);
+      
       txtComputerName = '';
       //Checkboxes
       nodelistCheckBoxes = document.querySelectorAll('.table_td .checkbox_field');
@@ -398,7 +398,7 @@ function ExtractFormattedTextBasedOnURL()
               //console.dir(rowsComputerStatus[i]);
               if (i === x)
               {
-                txtComputerName = txtComputerName + rows[i].innerText.trim() + " [Heartbeat:" + rowsHeartBeat[i].innerText + ", Status:" + rowsComputerStatus[i].innerText + "]" + "\n";
+                txtComputerName = "`" + txtComputerName + rows[i].innerText.trim() + " [Heartbeat:" + rowsHeartBeat[i].innerText + ", Status:" + rowsComputerStatus[i].innerText + "]`" + "\n";
                 //window.alert(txtComputerName);
                 //console.dir(rowsComputerStatus[i]);
               }
@@ -470,6 +470,7 @@ function ExtractFormattedTextBasedOnURL()
         completeMWInformationText = FTObject.txtProblemStatement;
         completeMWInformationText = completeMWInformationText + FTObject.txtStaticAccountNameLink;
         completeMWInformationText = completeMWInformationText + FTObject.txtStaticWorkGroupName;
+        completeMWInformationText = completeMWInformationText + FTObject.txtStaticProjectTypeBold
         completeMWInformationText = completeMWInformationText + FTObject.txtStaticProjectName;
         completeMWInformationText = completeMWInformationText + FTObject.txtStaticItemNames;
         completeMWInformationText = completeMWInformationText + FTObject.txtStaticEndText;
