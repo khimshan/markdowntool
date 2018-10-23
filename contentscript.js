@@ -39,7 +39,7 @@ function ExtractFormattedTextFromMW()
 {
   var FormattedTextObject = {};
   var itemCount = 0;
-  var txtProblemStatement, txtAccountName, txtStaticAccountName, txtStaticAccountNameLink, nodelistWorkGroup, txtStaticWorkGroupName, txtStaticWorkGroupNameBold, txtProjecName, txtStaticProjectName, txtStaticProjectTypeBold, txtStaticProjectNameBold, txtStaticItemNames, txtStaticItemNamesBold, txtStaticEndText, txtItemNameForInternal, txtItemNameForCustomer;
+  var txtProblemStatement, txtAccountName, txtStaticAccountName, txtStaticAccountNameLink, nodelistWorkGroup, txtStaticWorkGroupName, txtStaticWorkGroupNameBold, txtProjecName, txtStaticProjectName, txtStaticProjectType, txtStaticProjectTypeBold, txtStaticProjectNameBold, txtStaticItemNames, txtStaticItemNamesBold, txtStaticEndText, txtItemNameForInternal, txtItemNameForCustomer;
   var txtProjectType, txtSourceEndpoint, txtDestEndpoint;
 
   txtAccountName = ExtractImpersonationAccountID();
@@ -47,7 +47,7 @@ function ExtractFormattedTextFromMW()
   txtProblemStatement = "**Problem Statement**\n\n**Customer Data**\n";
 
   txtStaticAccountNameLink = "Impersonation Account: " + txtAccountName + "\n";
-  txtStaticAccountNameLink = txtStaticAccountNameLink + "Impersonation Link: " + "https://internal.bittitan.com/Impersonate/" + txtAccountName + "\n";
+  //txtStaticAccountNameLink = txtStaticAccountNameLink + "Impersonation Link: " + "https://internal.bittitan.com/Impersonate/" + txtAccountName + "\n";
   txtStaticAccountName = "**Account Name:** " + txtAccountName + "\n";
 
   nodelistWorkGroup = document.querySelectorAll('.select-workgroup_current-workgroup');
@@ -58,35 +58,38 @@ function ExtractFormattedTextFromMW()
   }
   txtProjecName = document.getElementById("nav-breadcrumb").innerText.trim();
   txtStaticProjectName = "Project Name: " + txtProjecName + "\n";
-  txtStaticProjectName = txtStaticProjectName + "Project Link: " + URLOBJECT.urlText + "\n";
+  //txtStaticProjectName = txtStaticProjectName + "Project Link: " + URLOBJECT.urlText + "\n";
   txtStaticProjectNameBold = "**Project Name:** " + "[" + txtProjecName + "]" + "(" + URLOBJECT.urlText + ")\n";
 
   nodelistProjectType = document.querySelectorAll('.active .width-px-185');
-  
+
   txtProjectType = "";
 
   if (typeof nodelistProjectType[0] != 'undefined')
   {
     txtProjectType = nodelistProjectType[0].innerHTML.trim();
-    if (txtProjectType.match(/title\=\"(.*?)\"/i) != null) {
+    if (txtProjectType.match(/title\=\"(.*?)\"/i) != null)
+    {
       txtProjectType = txtProjectType.match(/title\=\"(.*?)\"/i)[1];
     }
   }
 
-  nodelistProjectType = document.querySelectorAll('.active .i2x+ .down-5');  
+  nodelistProjectType = document.querySelectorAll('.active .i2x+ .down-5');
   if (typeof nodelistProjectType[0] != 'undefined')
   {
-    txtSourceEndpoint = nodelistProjectType[0].innerText;
+    txtSourceEndpoint = nodelistProjectType[0].innerText.trim();
   }
 
   nodelistProjectType = document.querySelectorAll('.active .destination+ .down-5');
   if (typeof nodelistProjectType[0] != 'undefined')
   {
-    txtDestEndpoint = nodelistProjectType[0].innerText;
+    txtDestEndpoint = nodelistProjectType[0].innerText.trim();
   }
 
-  if (txtProjectType != "") {
-    txtStaticProjectTypeBold = "**Project Type:** " + txtProjectType + " - [" + txtSourceEndpoint + " to "+ txtDestEndpoint +"] \n";
+  if (txtProjectType != "")
+  {
+    txtStaticProjectTypeBold = "**Project Type:** " + txtProjectType + " - [" + txtSourceEndpoint + " to " + txtDestEndpoint + "] \n";
+    txtStaticProjectType = "Project Type: " + txtProjectType + " - [" + txtSourceEndpoint + " to " + txtDestEndpoint + "] \n"
   }
 
   // Extract all checked box elements (line item)
@@ -117,7 +120,9 @@ function ExtractFormattedTextFromMW()
             {
               txtItemNameCheckForSlash = "Line Item " + (i + 1) + " - \"/\"";
             }
-            txtItemNameForInternal = txtItemNameForInternal + txtItemNameCheckForSlash + " - Link: " + rows[i].href.trim() + "\n";
+            var regExp = /\/projects\/.*\/(.*)\?qp_current/g; //To catpure Mailbox ID
+            var match = regExp.exec(rows[i].href.trim());
+            txtItemNameForInternal = txtItemNameForInternal + txtItemNameCheckForSlash + " - Link: https://internal.bittitan.com/MailboxDiagnostic/ViewMailboxDiagnostic?mailboxId=" + match[1] + "\n";
             txtItemNameForCustomer = txtItemNameForCustomer + "[" + txtItemNameCheckForSlash + "]" + "(" + rows[i].href.trim() + ")\n";
           }
         }
@@ -136,11 +141,12 @@ function ExtractFormattedTextFromMW()
     txtStaticItemNamesBold = "**Items affected :**\n" + txtItemNameForCustomer;
   }
 
-  txtStaticEndText = "\n**Previous Actions**\n\n**Current Actions**\n\n**Next Steps**\n"
+  //txtStaticEndText = "\n**Previous Actions**\n\n**Current Actions**\n\n**Next Steps**\n"
+  txtStaticEndText = "Source Version:\nDestination Version:\nSource or Destination:\n"
 
   FormattedTextObject = {
     txtProblemStatement: txtProblemStatement, txtAccountName: txtAccountName, txtStaticAccountName: txtStaticAccountName, txtStaticAccountNameLink: txtStaticAccountNameLink, nodelistWorkGroup: nodelistWorkGroup, txtStaticWorkGroupName: txtStaticWorkGroupName,
-    txtStaticWorkGroupNameBold: txtStaticWorkGroupNameBold, txtProjecName: txtProjecName, txtStaticProjectName: txtStaticProjectName, txtStaticProjectTypeBold : txtStaticProjectTypeBold, txtStaticProjectNameBold: txtStaticProjectNameBold, txtStaticItemNames: txtStaticItemNames, txtStaticItemNamesBold: txtStaticItemNamesBold,
+    txtStaticWorkGroupNameBold: txtStaticWorkGroupNameBold, txtProjecName: txtProjecName, txtStaticProjectName: txtStaticProjectName, txtStaticProjectType: txtStaticProjectType, txtStaticProjectTypeBold: txtStaticProjectTypeBold, txtStaticProjectNameBold: txtStaticProjectNameBold, txtStaticItemNames: txtStaticItemNames, txtStaticItemNamesBold: txtStaticItemNamesBold,
     txtStaticEndText: txtStaticEndText, txtItemNameForInternal: txtItemNameForInternal, txtItemNameForCustomer: txtItemNameForCustomer
   }
 
@@ -211,7 +217,7 @@ function ExtractFormattedTextBasedOnURL()
     completeMWInformationText = txtAccountNameBold;
     completeMWInformationText = completeMWInformationText + txtStaticWorkGroupNameBold;
     completeMWInformationText = completeMWInformationText + txtStaticCustomerNameBold;
-    console.log(completeMWInformationText);
+    //console.log(completeMWInformationText);
 
 
     //Checkboxes
@@ -233,12 +239,12 @@ function ExtractFormattedTextBasedOnURL()
 
           for (i = 0; i <= x; i++)
           {
-            console.log(i + " : " + rowsLicense[i].innerText);
-            console.dir(rowsLicense[i]);
+            //console.log(i + " : " + rowsLicense[i].innerText.trim());
+            //console.dir(rowsLicense[i]);
             if (i === x)
             {
-              txtUserEmail = txtUserEmail + "`" + rows[i].innerText.trim() + " [UPN:" + rowsUPN[i].innerText + ", License:" + rowsLicense[i].innerText + ", Status:" + rowsStatus[i].innerText+ "]`" + "\n";
-              console.dir(rowsLicense[i]);
+              txtUserEmail = txtUserEmail + "`" + rows[i].innerText.trim() + " [UPN: " + rowsUPN[i].innerText.trim() + ", License: " + rowsLicense[i].innerText.trim() + ", Status: " + rowsStatus[i].innerText.trim() + "]`" + "\n";
+              //console.dir(rowsLicense[i]);
             }
           }
         }
@@ -310,16 +316,16 @@ function ExtractFormattedTextBasedOnURL()
             //var rowsLicense = document.querySelectorAll('.h-pointer .ember-view');
             var rowsLicense = document.querySelectorAll('.table_td:nth-child(6)');
 
-            console.log(rowsDMA[0].innerText);
+            //console.log(rowsDMA[0].innerText.trim());
 
             for (i = 0; i <= x; i++)
             {
-              console.log(i + " : " + rowsLicense[i].innerText);
-              console.dir(rowsLicense[i]);
+              //console.log(i + " : " + rowsLicense[i].innerText.trim());
+              //console.dir(rowsLicense[i]);
               if (i === x)
               {
-                txtUserEmail = "`" + txtUserEmail + rows[i].innerText.trim() + " [DMA:" + rowsDMA[i].innerText + ", License:" + rowsLicense[i].innerText + "]`" + "\n";
-                console.dir(rowsLicense[i]);
+                txtUserEmail = txtUserEmail + "`" + rows[i].innerText.trim() + " [DMA: " + rowsDMA[i].innerText.trim() + ", License: " + rowsLicense[i].innerText.trim() + "]`" + "\n";
+                //console.dir(rowsLicense[i]);
               }
             }
           }
@@ -329,13 +335,13 @@ function ExtractFormattedTextBasedOnURL()
         nodelistUserDevice = document.querySelectorAll('.detail-panel_section:nth-child(4)');
         if (typeof nodelistUserDevice[0] != 'undefined' & nodelistUserDevice != null)
         {
-          console.log("Inside txt user device");
-          txtUserDevicesRaw = nodelistUserDevice[0].innerText;
+          //console.log("Inside txt user device");
+          txtUserDevicesRaw = nodelistUserDevice[0].innerText.trim();
           txtUserDevicesRaw = txtUserDevicesRaw.split('\n');
-          console.log("outside txt user device : " + txtUserDevicesRaw[0]);
+          //console.log("outside txt user device : " + txtUserDevicesRaw[0]);
           for (x = 2; x < txtUserDevicesRaw.length; ++x)
           {
-            console.log("txt user device : " + txtUserDevicesRaw[x]);
+            //console.log("txt user device : " + txtUserDevicesRaw[x]);
             tmptxtUserDevicesRaw = txtUserDevicesRaw[x].split('\t');
             txtUserDevices = txtUserDevices + tmptxtUserDevicesRaw[0] + ":" + tmptxtUserDevicesRaw[1] + "\n";
           }
@@ -369,7 +375,7 @@ function ExtractFormattedTextBasedOnURL()
       }
     } else if (txtCurrentTabName.toUpperCase() === "COMPUTERS")
     { //COMPUTERS
-      
+
       txtComputerName = '';
       //Checkboxes
       nodelistCheckBoxes = document.querySelectorAll('.table_td .checkbox_field');
@@ -379,7 +385,7 @@ function ExtractFormattedTextBasedOnURL()
       {
         for (x = 0; x < nodelistCheckBoxes.length; ++x)
         {
-          console.dir(nodelistCheckBoxes[x]);
+          //console.dir(nodelistCheckBoxes[x]);
           if (nodelistCheckBoxes[x].checked == true)
           {
             //window.alert(nodelistCheckBoxes);
@@ -390,17 +396,15 @@ function ExtractFormattedTextBasedOnURL()
             var rowsHeartBeat = document.querySelectorAll('.table_tr .h-pointer:nth-child(3)');
             var rowsComputerStatus = document.querySelectorAll('.table_td:nth-child(4)');
 
-            console.log(rowsHeartBeat[0].innerText);
+            //console.log(rowsHeartBeat[0].innerText.trim());
 
-            for (i = 0; i <= x; i++)
+            for (i = 0; i < nodelistCheckBoxes.length; ++i)
             {
-              //console.log(i + " : " + rowsHeartBeat[i].innerText);
+              //console.log(i + " : " + rowsHeartBeat[i].innerText.trim());
               //console.dir(rowsComputerStatus[i]);
               if (i === x)
-              {
-                txtComputerName = "`" + txtComputerName + rows[i].innerText.trim() + " [Heartbeat:" + rowsHeartBeat[i].innerText + ", Status:" + rowsComputerStatus[i].innerText + "]`" + "\n";
-                //window.alert(txtComputerName);
-                //console.dir(rowsComputerStatus[i]);
+              {                
+                txtComputerName = txtComputerName + "`" + rows[i].innerText.trim() + " [Heartbeat: " + rowsHeartBeat[i].innerText.trim() + ", Status: " + rowsComputerStatus[i].innerText.trim() + "]`" + "\n";
               }
             }
           }
@@ -411,11 +415,19 @@ function ExtractFormattedTextBasedOnURL()
         nodelistUserDetected = document.querySelectorAll('.base-table .table_td');
         if (nodelistUserDetected != null & typeof nodelistUserDetected[0] != 'undefined')
         {
+          bolFirstDetection = true;
           for (var i = 0; i < nodelistUserDetected.length; i++)
           {
-            if (nodelistUserDetected[i].innerText.trim() != '')
+            if (nodelistUserDetected[i].innerText.indexOf("@") != -1)
             {
-              txtUserDetected = txtUserDetected + nodelistUserDetected[i].innerText + "\n";
+              if (bolFirstDetection)
+              {
+                txtUserDetected = nodelistUserDetected[i].innerText.trim();
+                bolFirstDetection = false;
+              } else
+              {
+                txtUserDetected = txtUserDetected + ", " + nodelistUserDetected[i].innerText.trim();
+              }
             }
           }
           //window.alert(txtUserDetected);
@@ -467,10 +479,10 @@ function ExtractFormattedTextBasedOnURL()
         completeMWInformationText = completeMWInformationText + "**Issue:**";
       } else
       {
-        completeMWInformationText = FTObject.txtProblemStatement;
+        //completeMWInformationText = FTObject.txtProblemStatement;
         completeMWInformationText = completeMWInformationText + FTObject.txtStaticAccountNameLink;
         completeMWInformationText = completeMWInformationText + FTObject.txtStaticWorkGroupName;
-        completeMWInformationText = completeMWInformationText + FTObject.txtStaticProjectTypeBold
+        completeMWInformationText = completeMWInformationText + FTObject.txtStaticProjectType;
         completeMWInformationText = completeMWInformationText + FTObject.txtStaticProjectName;
         completeMWInformationText = completeMWInformationText + FTObject.txtStaticItemNames;
         completeMWInformationText = completeMWInformationText + FTObject.txtStaticEndText;
