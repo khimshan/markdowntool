@@ -4,7 +4,7 @@
       "version": "2.64",
       "background": {
             "scripts": [
-                  "browser-polyfill.js",
+                  "browser-polyfill.min.js",
                   "background.js"
             ]
       },
@@ -32,7 +32,7 @@
                         "https://*.bittitan.com/*"
                   ],
                   "js": [
-                        "browser-polyfill.js",
+                        "browser-polyfill.min.js",
                         "contentscript.js"
                   ]
             }
