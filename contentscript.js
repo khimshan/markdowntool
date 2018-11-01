@@ -30,7 +30,9 @@ function ExtractImpersonationAccountID()
     return "*******";
   } else
   {
-    return elmAccountName.innerText.split(':')[1].trim();
+    elmAccountName = elmAccountName.innerText.split(':')[1].trim();
+    elmAccountName = elmAccountName.split(' ')[0];
+    return elmAccountName.split(' (')[0];
   }
 }
 
