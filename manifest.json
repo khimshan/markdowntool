@@ -32,6 +32,7 @@
                         "https://*.bittitan.com/*"
                   ],
                   "js": [
+                        "toast.min.js",
                         "browser-polyfill.min.js",
                         "contentscript.js"
                   ]

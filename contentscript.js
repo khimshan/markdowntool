@@ -24,6 +24,11 @@ function ExtractImpersonationAccountID()
 {
   var elmAccountName = document.getElementsByClassName("top-banner is-warning")[0];
 
+  if (elmAccountName == null) // for old version of MigrationWiz
+  { 
+    elmAccountName = document.getElementsByClassName("impersonation-warning")[0];
+  }
+
   // If user has not impersonate account, there will not be account inforamtion, replace with "*"
   if (elmAccountName == null)
   {
@@ -74,6 +79,9 @@ function ExtractFormattedTextFromMW()
     {
       txtProjectType = txtProjectType.match(/title\=\"(.*?)\"/i)[1];
     }
+  } else 
+  {
+    iqwerty.toast.Toast('Unable to find Project Type, please scroll project panel to make highlighted project visible in your Window.');
   }
 
   nodelistProjectType = document.querySelectorAll('.active .i2x+ .down-5');
@@ -124,6 +132,10 @@ function ExtractFormattedTextFromMW()
             }
             var regExp = /\/projects\/.*\/(.*)\?qp_current/g; //To catpure Mailbox ID
             var match = regExp.exec(rows[i].href.trim());
+            if (match == null) {
+              regExp = /\/projects\/.*\/(.*)/g; //To catpure Mailbox ID from old format URL, e.g. 21v
+              match = regExp.exec(rows[i].href.trim());
+            };
             txtItemNameForInternal = txtItemNameForInternal + txtItemNameCheckForSlash + " - Link: https://internal.bittitan.com/MailboxDiagnostic/ViewMailboxDiagnostic?mailboxId=" + match[1] + "\n";
             txtItemNameForCustomer = txtItemNameForCustomer + "[" + txtItemNameCheckForSlash + "]" + "(" + rows[i].href.trim() + ")\n";
           }
@@ -405,7 +417,7 @@ function ExtractFormattedTextBasedOnURL()
               //console.log(i + " : " + rowsHeartBeat[i].innerText.trim());
               //console.dir(rowsComputerStatus[i]);
               if (i === x)
-              {                
+              {
                 txtComputerName = txtComputerName + "`" + rows[i].innerText.trim() + " [Heartbeat: " + rowsHeartBeat[i].innerText.trim() + ", Status: " + rowsComputerStatus[i].innerText.trim() + "]`" + "\n";
               }
             }
@@ -461,13 +473,14 @@ function ExtractFormattedTextBasedOnURL()
   }
 
   // For MigrationWiz page
-  if (URLOBJECT.urlText.indexOf('migrationwiz.bittitan.com') != -1)
+  //if (URLOBJECT.urlText.indexOf('migrationwiz.bittitan.com') != -1)
+  if ((/migrationwiz/i).test(URLOBJECT.urlText))
   {
-    // For MW projects
-    var FTObject = ExtractFormattedTextFromMW();
-
     if (URLOBJECT.urlText.split("/").length - 1 === 5)
     {
+      // For MW projects
+      var FTObject = ExtractFormattedTextFromMW();
+
       // Project Level
       var completeMWInformationText = '';
 
