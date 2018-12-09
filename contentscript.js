@@ -54,7 +54,6 @@ function ExtractFormattedTextFromMW()
   txtProblemStatement = "**Problem Statement**\n\n**Customer Data**\n";
 
   txtStaticAccountNameLink = "Impersonation Account: " + txtAccountName + "\n";
-  //txtStaticAccountNameLink = txtStaticAccountNameLink + "Impersonation Link: " + "https://internal.bittitan.com/Impersonate/" + txtAccountName + "\n";
   txtStaticAccountName = "**Account Name:** " + txtAccountName + "\n";
 
   nodelistWorkGroup = document.querySelectorAll('.select-workgroup_current-workgroup');
@@ -65,31 +64,35 @@ function ExtractFormattedTextFromMW()
   }
   txtProjecName = document.getElementById("nav-breadcrumb").innerText.trim();
   txtStaticProjectName = "Project Name: " + txtProjecName + "\n";
-  //txtStaticProjectName = txtStaticProjectName + "Project Link: " + URLOBJECT.urlText + "\n";
   txtStaticProjectNameBold = "**Project Name:** " + "[" + txtProjecName + "]" + "(" + URLOBJECT.urlText + ")\n";
 
   nodelistProjectType = document.querySelectorAll('.active .width-px-185');
 
   txtProjectType = "";
 
+  // Check to ensure that Project Type is not undefined
   if (typeof nodelistProjectType[0] != 'undefined')
   {
     txtProjectType = nodelistProjectType[0].innerHTML.trim();
     if (txtProjectType.match(/title\=\"(.*?)\"/i) != null)
     {
+      // Extract project type for use in formatted text
       txtProjectType = txtProjectType.match(/title\=\"(.*?)\"/i)[1];
     }
   } else 
   {
+    // Pop up notification is Project Type is undefined
     iqwerty.toast.Toast('Unable to find Project Type, please scroll project panel to make highlighted project visible in your Window.');
   }
 
+  // Extract Source Endpoint name
   nodelistProjectType = document.querySelectorAll('.active .i2x+ .down-5');
   if (typeof nodelistProjectType[0] != 'undefined')
   {
     txtSourceEndpoint = nodelistProjectType[0].innerText.trim();
   }
 
+  // Extract Destination Endpoint name
   nodelistProjectType = document.querySelectorAll('.active .destination+ .down-5');
   if (typeof nodelistProjectType[0] != 'undefined')
   {
@@ -468,12 +471,10 @@ function ExtractFormattedTextBasedOnURL()
         }
       }
     }
-    //window.alert(completeMWInformationText);
     CopyTextToClipboard(completeMWInformationText);
   }
 
   // For MigrationWiz page
-  //if (URLOBJECT.urlText.indexOf('migrationwiz.bittitan.com') != -1)
   if ((/migrationwiz/i).test(URLOBJECT.urlText))
   {
     if (URLOBJECT.urlText.split("/").length - 1 === 5)
